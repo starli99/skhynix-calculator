@@ -1,16 +1,1 @@
-{
-  "name": "SK海力士跨市场看板",
-  "short_name": "海力士看板",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f4f6f8",
-  "theme_color": "#0f172a",
-  "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
-}
+{"name":"SK海力士交易看板","short_name":"海力士看板","start_url":"./","display":"standalone","background_color":"#f5f7fa","theme_color":"#0b1220","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
