@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="SK海力士韩国正股、香港07709与美国SKHY ADR跨市场行情及换算工具">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>SK海力士跨市场看板</title>
+  <style>
+    :root{
+      --bg:#f4f6f8;--card:#ffffff;--text:#101828;--muted:#667085;--line:#e4e7ec;
+      --soft:#f8fafc;--primary:#2563eb;--primary-soft:#eff6ff;
+      --up:#d92d20;--down:#039855;--warn:#dc6803;--shadow:0 8px 24px rgba(16,24,40,.06);
+    }
+    [data-theme="dark"]{
+      --bg:#0b1220;--card:#111827;--text:#f8fafc;--muted:#98a2b3;--line:#273244;
+      --soft:#0f172a;--primary:#60a5fa;--primary-soft:#172554;
+      --up:#fb7185;--down:#34d399;--warn:#fbbf24;--shadow:0 10px 28px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    .app{max-width:920px;margin:0 auto;padding:14px 12px 38px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    h1{font-size:21px;line-height:1.2;margin:0}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:5px}
+    button{
+      border:0;border-radius:12px;padding:10px 13px;font-size:14px;font-weight:800;
+      background:var(--primary);color:#fff;cursor:pointer;
+    }
+    button.secondary{background:var(--card);color:var(--text);border:1px solid var(--line)}
+    .stack{display:grid;gap:10px}
+    .market-card,.panel{
+      background:var(--card);border:1px solid var(--line);border-radius:18px;
+      padding:15px;box-shadow:var(--shadow);
+    }
+    .market-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .market-name{font-size:16px;font-weight:900}
+    .ticker{font-size:11px;color:var(--muted);margin-top:3px}
+    .badge{
+      background:var(--primary-soft);color:var(--primary);font-size:11px;font-weight:900;
+      padding:5px 8px;border-radius:999px;white-space:nowrap;
+    }
+    .price{font-size:32px;font-weight:950;letter-spacing:-1px;margin-top:10px}
+    .unit{font-size:13px;color:var(--muted);margin-left:5px;font-weight:800}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .stat{background:var(--soft);padding:10px;border-radius:12px;min-width:0}
+    .label{font-size:11px;color:var(--muted);font-weight:800}
+    .value{font-size:17px;font-weight:950;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .up{color:var(--up)}.down{color:var(--down)}.neutral{color:var(--text)}
+    .section-title{font-size:14px;color:var(--muted);font-weight:900;margin:18px 2px 8px}
+    .compare-grid,.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .compare-item,.calc-item{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:11px}
+    .compare-item.best{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+    .compare-title{font-size:11px;color:var(--muted);font-weight:900}
+    .compare-price{font-size:19px;font-weight:950;margin-top:5px}
+    .compare-note{font-size:11px;color:var(--muted);margin-top:5px}
+    .alert{
+      margin-top:10px;padding:11px 12px;border-radius:12px;background:var(--primary-soft);
+      font-size:12px;line-height:1.55;font-weight:700;
+    }
+    .alert.warn{color:var(--warn)}
+    .inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    label{display:block;font-size:11px;color:var(--muted);font-weight:900;margin-bottom:5px}
+    input,select{
+      width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;
+      background:var(--soft);color:var(--text);font-size:15px;outline:none;
+    }
+    input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+    .note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:11px}
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .footer{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;line-height:1.6}
+    @media(max-width:680px){
+      .inputs{grid-template-columns:1fr 1fr}
+      .compare-grid,.calc-grid{grid-template-columns:1fr}
+      .price{font-size:29px}
+    }
+    @media(max-width:400px){
+      .app{padding:12px 9px 30px}
+      .stats{grid-template-columns:repeat(3,1fr)}
+      .value{font-size:15px}
+      .stat{padding:9px 7px}
+      h1{font-size:19px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>SK海力士跨市场看板</h1>
+      <div class="subtitle">韩国正股 · 香港07709 · 美国SKHY</div>
+    </div>
+    <button id="themeBtn" class="secondary" aria-label="切换主题">🌙</button>
+  </header>
+
+  <section class="stack">
+    <article class="market-card">
+      <div class="market-head">
+        <div><div class="market-name">韩国正股</div><div class="ticker">000660 · KRW</div></div>
+        <span class="badge">基准市场</span>
+      </div>
+      <div class="price"><span id="krPriceView">—</span><span class="unit">KRW</span></div>
+      <div class="stats">
+        <div class="stat"><div class="label">盘中涨跌</div><div class="value" id="krDayView">—</div></div>
+        <div class="stat"><div class="label">盘后涨跌</div><div class="value" id="krAfterView">—</div></div>
+        <div class="stat"><div class="label">综合涨跌</div><div class="value" id="krTotalView">—</div></div>
+      </div>
+    </article>
+
+    <article class="market-card">
+      <div class="market-head">
+        <div><div class="market-name">香港南方东英2倍</div><div class="ticker">07709 · HKD</div></div>
+        <span class="badge">每日2倍</span>
+      </div>
+      <div class="price"><span id="hkPriceView">—</span><span class="unit">HKD</span></div>
+      <div class="stats">
+        <div class="stat"><div class="label">实时涨跌</div><div class="value" id="hkChangeView">—</div></div>
+        <div class="stat"><div class="label">估算净值</div><div class="value" id="hkNavView">—</div></div>
+        <div class="stat"><div class="label">折溢价率</div><div class="value" id="hkPremiumView">—</div></div>
+      </div>
+    </article>
+
+    <article class="market-card">
+      <div class="market-head">
+        <div><div class="market-name">美国ADR</div><div class="ticker">SKHY · USD</div></div>
+        <span class="badge">10 ADR = 1股</span>
+      </div>
+      <div class="price"><span id="adrPriceView">—</span><span class="unit">USD</span></div>
+      <div class="stats">
+        <div class="stat"><div class="label">盘中涨跌</div><div class="value" id="adrDayView">—</div></div>
+        <div class="stat"><div class="label">盘后涨跌</div><div class="value" id="adrAfterView">—</div></div>
+        <div class="stat"><div class="label">折溢价率</div><div class="value" id="adrPremiumView">—</div></div>
+      </div>
+    </article>
+  </section>
+
+  <div class="section-title">理论价格与机会对比</div>
+  <section class="panel">
+    <div class="compare-grid">
+      <div class="compare-item" id="krCompare">
+        <div class="compare-title">韩国正股</div>
+        <div class="compare-price" id="krComparePrice">—</div>
+        <div class="compare-note">基准市场</div>
+      </div>
+      <div class="compare-item" id="hkCompare">
+        <div class="compare-title">香港07709</div>
+        <div class="compare-price" id="hkTheoryPrice">—</div>
+        <div class="compare-note" id="hkCompareNote">—</div>
+      </div>
+      <div class="compare-item" id="adrCompare">
+        <div class="compare-title">美国SKHY</div>
+        <div class="compare-price" id="adrTheoryPrice">—</div>
+        <div class="compare-note" id="adrCompareNote">—</div>
+      </div>
+    </div>
+    <div class="alert" id="bestMarket">—</div>
+    <div class="alert" id="premiumAlert">—</div>
+    <div class="alert" id="afterEstimate">—</div>
+  </section>
+
+  <div class="section-title">跨市场目标价格换算</div>
+  <section class="panel">
+    <div class="inputs">
+      <div>
+        <label>输入市场</label>
+        <select id="sourceMarket">
+          <option value="kr">韩国正股</option>
+          <option value="adr">美国ADR</option>
+          <option value="hk">香港07709</option>
+        </select>
+      </div>
+      <div>
+        <label>目标价格</label>
+        <input id="targetPrice" inputmode="decimal" value="2200000">
+      </div>
+      <div>
+        <label>换算方式</label>
+        <select><option>理论等价价格</option></select>
+      </div>
+    </div>
+    <div class="calc-grid" style="margin-top:11px">
+      <div class="calc-item"><div class="compare-title">韩国正股理论价</div><div class="compare-price" id="targetKr">—</div></div>
+      <div class="calc-item"><div class="compare-title">香港07709理论价</div><div class="compare-price" id="targetHk">—</div></div>
+      <div class="calc-item"><div class="compare-title">美国SKHY理论价</div><div class="compare-price" id="targetAdr">—</div></div>
+    </div>
+    <div class="note">07709按“昨日净值 × [1 + 韩国当日涨幅 × 2]”估算，只适用于当日理论比较。</div>
+  </section>
+
+  <div class="section-title">行情与参数输入</div>
+  <section class="panel">
+    <div class="inputs">
+      <div><label>韩国现价</label><input id="krNow" inputmode="decimal" value="2200000"></div>
+      <div><label>韩国昨收</label><input id="krPrev" inputmode="decimal" value="2100000"></div>
+      <div><label>韩国盘后价</label><input id="krAfter" inputmode="decimal" value="2230000"></div>
+
+      <div><label>07709现价</label><input id="hkNow" inputmode="decimal" value="88"></div>
+      <div><label>07709昨收</label><input id="hkPrev" inputmode="decimal" value="85"></div>
+      <div><label>07709昨日净值</label><input id="hkNavPrev" inputmode="decimal" value="84"></div>
+
+      <div><label>SKHY现价</label><input id="adrNow" inputmode="decimal" value="149"></div>
+      <div><label>SKHY昨收</label><input id="adrPrev" inputmode="decimal" value="145"></div>
+      <div><label>SKHY盘后价</label><input id="adrAfter" inputmode="decimal" value="151"></div>
+
+      <div><label>美元兑韩元 KRW/USD</label><input id="usdkrw" inputmode="decimal" value="1380"></div>
+      <div><label>港元兑韩元 KRW/HKD</label><input id="hkdkrw" inputmode="decimal" value="176"></div>
+      <div><label>ADR换算比例</label><input id="adrRatio" inputmode="decimal" value="10"></div>
+    </div>
+    <div class="toolbar">
+      <button id="copyBtn">复制行情摘要</button>
+      <button id="resetBtn" class="secondary">恢复示例</button>
+    </div>
+    <div class="note">所有输入会自动保存在当前浏览器。当前版本不连接外部行情接口，因此不会上传任何数据。</div>
+  </section>
+
+  <div class="footer">
+    07709属于每日杠杆产品，长期表现不等于韩国正股长期涨跌幅的两倍。页面结果仅用于快速估算。
+  </div>
+</div>
+
+<script>
+const ids=["krNow","krPrev","krAfter","hkNow","hkPrev","hkNavPrev","adrNow","adrPrev","adrAfter","usdkrw","hkdkrw","adrRatio","targetPrice","sourceMarket"];
+const defaults={krNow:2200000,krPrev:2100000,krAfter:2230000,hkNow:88,hkPrev:85,hkNavPrev:84,adrNow:149,adrPrev:145,adrAfter:151,usdkrw:1380,hkdkrw:176,adrRatio:10,targetPrice:2200000,sourceMarket:"kr"};
+const $=id=>document.getElementById(id);
+const n=id=>parseFloat($(id).value.replace(/,/g,""))||0;
+const pct=x=>(x*100).toFixed(2)+"%";
+const fmt=(x,d=2)=>Number(x||0).toLocaleString("zh-CN",{minimumFractionDigits:d,maximumFractionDigits:d});
+function tone(el,x){el.className="value "+(x>0?"up":x<0?"down":"neutral")}
+function calc(){
+  const kr=n("krNow"),krp=n("krPrev"),kra=n("krAfter");
+  const hk=n("hkNow"),hkp=n("hkPrev"),navp=n("hkNavPrev");
+  const adr=n("adrNow"),adrp=n("adrPrev"),adra=n("adrAfter");
+  const usdkrw=n("usdkrw"),ratio=n("adrRatio")||10;
+
+  const krDay=krp?kr/krp-1:0;
+  const krAfterMove=kr?kra/kr-1:0;
+  const krTotal=krp?kra/krp-1:0;
+
+  const hkChange=hkp?hk/hkp-1:0;
+  const hkNav=navp*(1+krDay*2);
+  const hkPremium=hkNav?hk/hkNav-1:0;
+
+  const adrChange=adrp?adr/adrp-1:0;
+  const adrAfterMove=adr?adra/adr-1:0;
+  const adrTheory=usdkrw?kr/ratio/usdkrw:0;
+  const adrPremium=adrTheory?adr/adrTheory-1:0;
+
+  $("krPriceView").textContent=fmt(kr,0);
+  $("krDayView").textContent=pct(krDay);tone($("krDayView"),krDay);
+  $("krAfterView").textContent=pct(krAfterMove);tone($("krAfterView"),krAfterMove);
+  $("krTotalView").textContent=pct(krTotal);tone($("krTotalView"),krTotal);
+
+  $("hkPriceView").textContent=fmt(hk,2);
+  $("hkChangeView").textContent=pct(hkChange);tone($("hkChangeView"),hkChange);
+  $("hkNavView").textContent=fmt(hkNav,2);
+  $("hkPremiumView").textContent=pct(hkPremium);tone($("hkPremiumView"),hkPremium);
+
+  $("adrPriceView").textContent=fmt(adr,2);
+  $("adrDayView").textContent=pct(adrChange);tone($("adrDayView"),adrChange);
+  $("adrAfterView").textContent=pct(adrAfterMove);tone($("adrAfterView"),adrAfterMove);
+  $("adrPremiumView").textContent=pct(adrPremium);tone($("adrPremiumView"),adrPremium);
+
+  $("krComparePrice").textContent=fmt(kr,0)+" KRW";
+  $("hkTheoryPrice").textContent="HK$"+fmt(hkNav,2);
+  $("hkCompareNote").textContent="实际 "+fmt(hk,2)+" · "+(hkPremium>=0?"溢价 ":"折价 ")+pct(Math.abs(hkPremium));
+  $("adrTheoryPrice").textContent="$"+fmt(adrTheory,2);
+  $("adrCompareNote").textContent="实际 "+fmt(adr,2)+" · "+(adrPremium>=0?"溢价 ":"折价 ")+pct(Math.abs(adrPremium));
+
+  document.querySelectorAll(".compare-item").forEach(x=>x.classList.remove("best"));
+  const choices=[
+    {name:"韩国正股",premium:0,id:"krCompare"},
+    {name:"香港07709",premium:hkPremium,id:"hkCompare"},
+    {name:"美国SKHY",premium:adrPremium,id:"adrCompare"}
+  ].sort((a,b)=>a.premium-b.premium);
+  $(choices[0].id).classList.add("best");
+  $("bestMarket").textContent="当前相对最便宜："+choices[0].name+"（按折溢价比较）";
+
+  const alerts=[];
+  if(Math.abs(adrPremium)>=0.02) alerts.push("SKHY折溢价已超过2%");
+  if(Math.abs(hkPremium)>=0.03) alerts.push("07709折溢价已超过3%");
+  $("premiumAlert").textContent=alerts.length?alerts.join("；")+"，请注意跨市场时差与净值误差。":"当前折溢价未触发预设提醒。";
+  $("premiumAlert").className="alert"+(alerts.length?" warn":"");
+
+  const hkAfterTheory=navp*(1+krTotal*2);
+  const adrAfterTheory=usdkrw?kra/ratio/usdkrw:0;
+  $("afterEstimate").textContent="按韩国盘后价估算：07709理论价 HK$"+fmt(hkAfterTheory,2)+"；SKHY理论价 $"+fmt(adrAfterTheory,2)+"。";
+
+  calcTargets();
+  const saved={};ids.forEach(i=>saved[i]=$(i).value);
+  localStorage.setItem("skhyFinalData",JSON.stringify(saved));
+}
+function calcTargets(){
+  const src=$("sourceMarket").value,t=n("targetPrice"),krp=n("krPrev"),navp=n("hkNavPrev"),fx=n("usdkrw"),ratio=n("adrRatio")||10;
+  let kr=0,hk=0,adr=0;
+  if(src==="kr"){
+    kr=t; adr=fx?kr/ratio/fx:0; hk=navp*(1+((krp?kr/krp-1:0)*2));
+  }else if(src==="adr"){
+    adr=t; kr=adr*ratio*fx; hk=navp*(1+((krp?kr/krp-1:0)*2));
+  }else{
+    hk=t; const move=navp?((hk/navp)-1)/2:0; kr=krp*(1+move); adr=fx?kr/ratio/fx:0;
+  }
+  $("targetKr").textContent=fmt(kr,0)+" KRW";
+  $("targetHk").textContent="HK$"+fmt(hk,2);
+  $("targetAdr").textContent="$"+fmt(adr,2);
+}
+ids.forEach(i=>$(i).addEventListener(i==="sourceMarket"?"change":"input",calc));
+$("resetBtn").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>$(k).value=v);calc()};
+$("themeBtn").onclick=()=>{
+  const dark=document.documentElement.dataset.theme==="dark";
+  const next=dark?"light":"dark";
+  document.documentElement.dataset.theme=next;
+  $("themeBtn").textContent=next==="dark"?"☀️":"🌙";
+  localStorage.setItem("skhyFinalTheme",next);
+};
+$("copyBtn").onclick=async()=>{
+  const text=[
+    "SK海力士跨市场行情",
+    "韩国正股："+$("krPriceView").textContent+" KRW，综合涨跌 "+$("krTotalView").textContent,
+    "香港07709："+$("hkPriceView").textContent+" HKD，涨跌 "+$("hkChangeView").textContent+"，折溢价 "+$("hkPremiumView").textContent,
+    "美国SKHY："+$("adrPriceView").textContent+" USD，盘中 "+$("adrDayView").textContent+"，折溢价 "+$("adrPremiumView").textContent,
+    $("afterEstimate").textContent
+  ].join("\n");
+  await navigator.clipboard.writeText(text);
+  $("copyBtn").textContent="已复制";
+  setTimeout(()=>$("copyBtn").textContent="复制行情摘要",1200);
+};
+(function init(){
+  const saved=JSON.parse(localStorage.getItem("skhyFinalData")||"{}");
+  ids.forEach(i=>{if(saved[i]!==undefined)$(i).value=saved[i]});
+  const theme=localStorage.getItem("skhyFinalTheme")||"light";
+  document.documentElement.dataset.theme=theme;
+  $("themeBtn").textContent=theme==="dark"?"☀️":"🌙";
+  calc();
+  if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+})();
+</script>
+</body>
+</html>
