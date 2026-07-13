@@ -1,34 +1,173 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><title>SK海力士交易看板</title><style>
-:root{--bg:#f5f7fa;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--soft:#f8fafc;--primary:#2563eb;--primary-soft:#eff6ff;--up:#d92d20;--down:#039855;--shadow:0 8px 26px rgba(16,24,40,.06)}[data-theme=dark]{--bg:#08111f;--card:#111827;--text:#f8fafc;--muted:#98a2b3;--line:#273244;--soft:#0f172a;--primary:#60a5fa;--primary-soft:#172554;--up:#fb7185;--down:#34d399;--shadow:0 10px 30px rgba(0,0,0,.28)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.app{max-width:980px;margin:auto;padding:14px 12px 38px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}h1{font-size:21px;margin:0}.sub,.note,.footer{font-size:12px;color:var(--muted);line-height:1.6}.sub{margin-top:4px}button{border:0;border-radius:12px;padding:10px 13px;font-size:14px;font-weight:800;background:var(--primary);color:white}button.secondary{background:var(--card);color:var(--text);border:1px solid var(--line)}.panel,.market{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}.section{font-size:14px;color:var(--muted);font-weight:900;margin:18px 2px 8px}.env,.stats,.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.env{grid-template-columns:repeat(4,1fr)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini,.box{background:var(--soft);border-radius:12px;padding:10px}.box{border:1px solid var(--line)}.k{font-size:11px;color:var(--muted);font-weight:800}.v{font-size:17px;font-weight:950;margin-top:5px}.up{color:var(--up)}.down{color:var(--down)}.neutral{color:var(--text)}.head{display:flex;justify-content:space-between;align-items:flex-start}.name{font-size:16px;font-weight:900}.ticker{font-size:11px;color:var(--muted);margin-top:3px}.badge{padding:5px 8px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:11px;font-weight:900}.price{font-size:32px;font-weight:950;letter-spacing:-1px;margin-top:10px}.unit{font-size:13px;color:var(--muted);margin-left:4px;font-weight:800}.stats{margin-top:12px}.stack{display:grid;gap:10px}.flow{display:grid;grid-template-columns:70px 1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.flow:last-child{border-bottom:0}.scorewrap{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}.score{font-size:38px;font-weight:950}.bar{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:var(--primary)}.alert{margin-top:10px;padding:11px 12px;border-radius:12px;background:var(--primary-soft);font-size:12px;line-height:1.55;font-weight:700}.level{display:flex;justify-content:space-between;background:var(--soft);padding:10px;border-radius:11px;margin-top:7px}.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;font-size:11px;color:var(--muted);font-weight:900;margin-bottom:5px}input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--soft);color:var(--text);font-size:15px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.footer{text-align:center;margin-top:18px}@media(max-width:720px){.env{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.inputs{grid-template-columns:1fr 1fr}}@media(max-width:400px){.app{padding:12px 9px 30px}.price{font-size:29px}.scorewrap{grid-template-columns:100px 1fr}}
-</style></head><body><div class="app"><header><div><h1>SK海力士交易看板</h1><div class="sub">最新版静态版 · 手动输入行情后自动分析</div></div><button id="theme" class="secondary">🌙</button></header>
-<section class="panel"><div class="env"><div class="mini"><div class="k">KOSPI</div><div class="v" id="kospiV">—</div></div><div class="mini"><div class="k">KOSPI 200</div><div class="v" id="k200V">—</div></div><div class="mini"><div class="k">SOX</div><div class="v" id="soxV">—</div></div><div class="mini"><div class="k">USD/KRW</div><div class="v" id="fxV">—</div></div></div></section>
-<div class="section">韩国正股</div><section class="market"><div class="head"><div><div class="name">SK Hynix</div><div class="ticker">000660 · KRW</div></div><span class="badge" id="session">—</span></div><div class="price"><span id="krPrice">—</span><span class="unit">KRW</span></div><div class="stats"><div class="mini"><div class="k">当前时段涨跌</div><div class="v" id="krSession">—</div></div><div class="mini"><div class="k">全天涨跌</div><div class="v" id="krTotal">—</div></div><div class="mini"><div class="k">量比</div><div class="v" id="vrV">—</div></div></div><div class="note" id="sessionNote"></div></section>
-<div class="section">成交与资金流</div><section class="panel"><div class="grid2"><div><div class="grid3"><div class="box"><div class="k">成交量</div><div class="v" id="volV">—</div></div><div class="box"><div class="k">20日均量</div><div class="v" id="avgVolV">—</div></div><div class="box"><div class="k">成交额</div><div class="v" id="turnV">—</div></div></div><div class="alert" id="volSignal">—</div></div><div><div class="flow"><span>外资</span><strong id="fV">—</strong><span id="fTag">—</span></div><div class="flow"><span>机构</span><strong id="iV">—</strong><span id="iTag">—</span></div><div class="flow"><span>散户</span><strong id="rV">—</strong><span id="rTag">—</span></div><div class="note" id="flowSum"></div></div></div></section>
-<div class="section">技术评分</div><section class="panel"><div class="scorewrap"><div><div class="score" id="score">—</div><div class="k" id="scoreLabel">—</div></div><div><div class="k">趋势 / 动量 / 成交量 / 资金 / 市场环境</div><div class="bar"><span id="scoreBar"></span></div><div class="note" id="scoreReason"></div></div></div><div class="alert" id="strategy"></div></section>
-<div class="section">支撑与阻力</div><section class="panel"><div class="level"><span>阻力2</span><strong id="r2V"></strong></div><div class="level"><span>阻力1</span><strong id="r1V"></strong></div><div class="level"><span>当前价</span><strong id="curV"></strong></div><div class="level"><span>支撑1</span><strong id="s1V"></strong></div><div class="level"><span>支撑2</span><strong id="s2V"></strong></div><div class="grid3" style="margin-top:10px"><div class="box"><div class="k">距支撑1</div><div class="v" id="dS"></div></div><div class="box"><div class="k">距阻力1</div><div class="v" id="dR"></div></div><div class="box"><div class="k">风险收益比</div><div class="v" id="rr"></div></div></div></section>
-<div class="section">跨市场价格</div><section class="stack"><article class="market"><div class="head"><div><div class="name">香港南方东英2倍</div><div class="ticker">07709 · HKD</div></div><span class="badge">每日2倍</span></div><div class="price"><span id="hkPrice">—</span><span class="unit">HKD</span></div><div class="stats"><div class="mini"><div class="k">实时涨跌</div><div class="v" id="hkCh"></div></div><div class="mini"><div class="k">估算净值</div><div class="v" id="hkNav"></div></div><div class="mini"><div class="k">折溢价率</div><div class="v" id="hkPrem"></div></div></div></article><article class="market"><div class="head"><div><div class="name">美国ADR</div><div class="ticker">SKHY · USD</div></div><span class="badge">10 ADR = 1股</span></div><div class="price"><span id="adrPrice">—</span><span class="unit">USD</span></div><div class="stats"><div class="mini"><div class="k">盘中涨跌</div><div class="v" id="adrCh"></div></div><div class="mini"><div class="k">盘后涨跌</div><div class="v" id="adrAfterCh"></div></div><div class="mini"><div class="k">折溢价率</div><div class="v" id="adrPrem"></div></div></div></article></section>
-<div class="section">跨市场结论</div><section class="panel"><div class="alert" id="best"></div><div class="alert" id="alert"></div><div class="alert" id="afterEst"></div></section>
-<div class="section">计算器与全部输入</div><section class="panel"><details><summary>展开计算器与参数</summary><div style="margin-top:14px"><div class="inputs">
-<div><label>KOSPI涨跌%</label><input id="kospi" value="1.2"></div><div><label>KOSPI200涨跌%</label><input id="k200" value="1.35"></div><div><label>SOX涨跌%</label><input id="sox" value="2.1"></div>
-<div><label>韩国昨收</label><input id="krPrev" value="2100000"></div><div><label>韩国盘前价</label><input id="krPre" value="2180000"></div><div><label>韩国日盘价</label><input id="krNow" value="2200000"></div><div><label>韩国盘后价</label><input id="krAfter" value="2230000"></div>
-<div><label>成交量</label><input id="vol" value="8200000"></div><div><label>20日均量</label><input id="avgVol" value="5100000"></div><div><label>成交额（亿韩元）</label><input id="turn" value="18200"></div>
-<div><label>外资净买入（亿韩元）</label><input id="foreign" value="-820"></div><div><label>机构净买入（亿韩元）</label><input id="inst" value="310"></div><div><label>散户净买入（亿韩元）</label><input id="retail" value="510"></div>
-<div><label>MA5</label><input id="ma5" value="2180000"></div><div><label>MA20</label><input id="ma20" value="2140000"></div><div><label>MA60</label><input id="ma60" value="2050000"></div><div><label>RSI(14)</label><input id="rsi" value="63"></div><div><label>MACD</label><select id="macd"><option value="gold">金叉</option><option value="neutral">中性</option><option value="death">死叉</option></select></div>
-<div><label>支撑1</label><input id="s1" value="2180000"></div><div><label>支撑2</label><input id="s2" value="2100000"></div><div><label>阻力1</label><input id="r1" value="2300000"></div><div><label>阻力2</label><input id="r2" value="2400000"></div>
-<div><label>07709现价</label><input id="hkNow" value="88"></div><div><label>07709昨收</label><input id="hkPrev" value="85"></div><div><label>07709昨日净值</label><input id="hkNavPrev" value="84"></div>
-<div><label>SKHY现价</label><input id="adrNow" value="149"></div><div><label>SKHY昨收</label><input id="adrPrev" value="145"></div><div><label>SKHY盘后价</label><input id="adrAfter" value="151"></div>
-<div><label>美元兑韩元</label><input id="usdkrw" value="1380"></div><div><label>ADR换算比例</label><input id="ratio" value="10"></div><div><label>目标市场</label><select id="source"><option value="kr">韩国正股</option><option value="adr">美国ADR</option><option value="hk">香港07709</option></select></div><div><label>目标价格</label><input id="target" value="2200000"></div></div>
-<div class="grid3" style="margin-top:12px"><div class="box"><div class="k">韩国理论价</div><div class="v" id="tKr"></div></div><div class="box"><div class="k">香港理论价</div><div class="v" id="tHk"></div></div><div class="box"><div class="k">ADR理论价</div><div class="v" id="tAdr"></div></div></div><div class="toolbar"><button id="copy">复制摘要</button><button id="reset" class="secondary">恢复示例</button></div></div></details></section>
-<div class="footer">本版本不连接外部行情接口。交易时段按韩国时间自动识别；所有数据保存在当前浏览器。</div></div>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>SK海力士跨市场看板</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--soft:#f8fafc;--blue:#2563eb;--blueSoft:#eff6ff;--up:#d92d20;--down:#039855;--warn:#dc6803;--shadow:0 8px 24px rgba(16,24,40,.06)}
+[data-theme=dark]{--bg:#08111f;--card:#111827;--text:#f8fafc;--muted:#98a2b3;--line:#273244;--soft:#0f172a;--blue:#60a5fa;--blueSoft:#172554;--up:#fb7185;--down:#34d399;--warn:#fbbf24;--shadow:0 10px 30px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.app{max-width:920px;margin:auto;padding:14px 12px 38px}header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.actions{display:flex;gap:8px}
+button{border:0;border-radius:12px;padding:10px 13px;font-size:14px;font-weight:800;background:var(--blue);color:#fff;cursor:pointer}
+button.secondary{background:var(--card);color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.55}
+.status{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--muted);margin-right:6px}.dot.ok{background:var(--down)}.dot.err{background:var(--up)}
+.market{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}
+.head{display:flex;justify-content:space-between;gap:10px}.name{font-size:16px;font-weight:900}.ticker{font-size:11px;color:var(--muted);margin-top:3px}.badge{background:var(--blueSoft);color:var(--blue);padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;white-space:nowrap}
+.price{font-size:31px;font-weight:950;letter-spacing:-1px;margin-top:10px}.unit{font-size:13px;color:var(--muted);font-weight:800;margin-left:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:var(--soft);border-radius:12px;padding:10px;min-width:0}.k{font-size:11px;color:var(--muted);font-weight:800}.v{font-size:17px;font-weight:950;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up{color:var(--up)}.down{color:var(--down)}.neutral{color:var(--text)}.section{font-size:14px;color:var(--muted);font-weight:900;margin:18px 2px 8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
+.env{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.mini{background:var(--soft);border-radius:12px;padding:10px}
+.alert{padding:11px 12px;border-radius:12px;background:var(--blueSoft);font-size:12px;line-height:1.55;font-weight:700;margin-top:9px}
+.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;font-size:11px;color:var(--muted);font-weight:900;margin-bottom:5px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--soft);color:var(--text);font-size:15px}
+details summary{font-weight:900;cursor:pointer}.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}.footer{text-align:center;color:var(--muted);font-size:11px;line-height:1.6;margin-top:18px}
+@media(max-width:680px){.env{grid-template-columns:repeat(2,1fr)}.inputs{grid-template-columns:1fr 1fr}.calc{grid-template-columns:1fr}}
+@media(max-width:390px){.app{padding:12px 9px 30px}.price{font-size:28px}.v{font-size:15px}.stat{padding:9px 7px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div><h1>SK海力士跨市场看板</h1><div class="sub">需要时点击刷新，不持续请求行情</div></div>
+ <div class="actions"><button id="refresh">刷新行情</button><button id="theme" class="secondary">🌙</button></div>
+</header>
+
+<div class="status"><span><i id="dot" class="dot"></i><span id="statusText">尚未刷新</span></span><span id="updated">—</span></div>
+
+<section class="panel">
+ <div class="env">
+  <div class="mini"><div class="k">KOSPI</div><div class="v" id="kospi">—</div></div>
+  <div class="mini"><div class="k">KOSPI 200</div><div class="v" id="kospi200">—</div></div>
+  <div class="mini"><div class="k">SOX</div><div class="v" id="sox">—</div></div>
+  <div class="mini"><div class="k">USD/KRW</div><div class="v" id="fx">—</div></div>
+ </div>
+</section>
+
+<div class="section">三地行情</div>
+<article class="market">
+ <div class="head"><div><div class="name">韩国正股</div><div class="ticker">000660 · KRW</div></div><span class="badge" id="krSession">韩国市场</span></div>
+ <div class="price"><span id="krPrice">—</span><span class="unit">KRW</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="krChange">—</div></div>
+  <div class="stat"><div class="k">成交量</div><div class="v" id="krVolume">—</div></div>
+  <div class="stat"><div class="k">数据来源</div><div class="v" id="krSource">—</div></div>
+ </div>
+</article>
+
+<article class="market">
+ <div class="head"><div><div class="name">香港南方东英2倍</div><div class="ticker">07709 · HKD</div></div><span class="badge">每日2倍</span></div>
+ <div class="price"><span id="hkPrice">—</span><span class="unit">HKD</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="hkChange">—</div></div>
+  <div class="stat"><div class="k">估算净值</div><div class="v" id="hkNav">—</div></div>
+  <div class="stat"><div class="k">折溢价</div><div class="v" id="hkPremium">—</div></div>
+ </div>
+</article>
+
+<article class="market">
+ <div class="head"><div><div class="name">美国ADR</div><div class="ticker">SKHY · USD</div></div><span class="badge">10 ADR = 1股</span></div>
+ <div class="price"><span id="usPrice">—</span><span class="unit">USD</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="usChange">—</div></div>
+  <div class="stat"><div class="k">理论价</div><div class="v" id="usTheory">—</div></div>
+  <div class="stat"><div class="k">折溢价</div><div class="v" id="usPremium">—</div></div>
+ </div>
+</article>
+
+<div class="section">跨市场结论</div>
+<section class="panel">
+ <div class="alert" id="best">刷新后显示相对折溢价。</div>
+ <div class="alert" id="warning">免费公开行情可能延迟或临时失效，页面会保留上一次成功数据。</div>
+</section>
+
+<div class="section">目标价格换算</div>
+<section class="panel">
+ <div class="inputs">
+  <div><label>输入市场</label><select id="source"><option value="kr">韩国正股</option><option value="us">美国ADR</option><option value="hk">香港07709</option></select></div>
+  <div><label>目标价格</label><input id="target" inputmode="decimal" value="2200000"></div>
+  <div><label>07709昨日净值</label><input id="navPrev" inputmode="decimal" value="84"></div>
+ </div>
+ <div class="calc">
+  <div class="mini"><div class="k">韩国理论价</div><div class="v" id="targetKr">—</div></div>
+  <div class="mini"><div class="k">香港理论价</div><div class="v" id="targetHk">—</div></div>
+  <div class="mini"><div class="k">ADR理论价</div><div class="v" id="targetUs">—</div></div>
+ </div>
+</section>
+
+<div class="section">手动兜底</div>
+<section class="panel">
+<details>
+ <summary>自动获取失败时展开修改</summary>
+ <div class="inputs" style="margin-top:13px">
+  <div><label>韩国现价</label><input id="manualKr" inputmode="decimal"></div>
+  <div><label>韩国昨收</label><input id="manualKrPrev" inputmode="decimal"></div>
+  <div><label>07709现价</label><input id="manualHk" inputmode="decimal"></div>
+  <div><label>07709昨收</label><input id="manualHkPrev" inputmode="decimal"></div>
+  <div><label>SKHY现价</label><input id="manualUs" inputmode="decimal"></div>
+  <div><label>SKHY昨收</label><input id="manualUsPrev" inputmode="decimal"></div>
+  <div><label>USD/KRW</label><input id="manualFx" inputmode="decimal"></div>
+ </div>
+ <button id="applyManual" style="margin-top:12px">应用手动数据</button>
+</details>
+</section>
+
+<div class="footer">数据仅供估算。韩国行情优先使用公开韩国行情源，港美股、指数与汇率使用公开市场数据源；均不构成交易建议。</div>
+</div>
+<script src="config.js"></script>
 <script>
-const ids=['kospi','k200','sox','krPrev','krPre','krNow','krAfter','vol','avgVol','turn','foreign','inst','retail','ma5','ma20','ma60','rsi','macd','s1','s2','r1','r2','hkNow','hkPrev','hkNavPrev','adrNow','adrPrev','adrAfter','usdkrw','ratio','source','target'];const $=i=>document.getElementById(i),n=i=>parseFloat($(i).value.replace(/,/g,''))||0,fmt=(x,d=2)=>Number(x||0).toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d}),pct=x=>(x*100).toFixed(2)+'%';const defaults={};ids.forEach(i=>defaults[i]=$(i).value);function tone(e,x){e.className='v '+(x>0?'up':x<0?'down':'neutral')}function ses(){const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),m={};p.forEach(x=>m[x.type]=x.value);const t=+m.hour*60 + +m.minute;if(['Sat','Sun'].includes(m.weekday))return['closed','周末休市','韩国市场周末休市'];if(t>=480&&t<530)return['pre','NXT盘前','韩国时间 08:00–08:50'];if(t>=530&&t<540)return['wait','等待日盘','盘前结束，等待09:00日盘'];if(t>=540&&t<930)return['day','KRX日盘','韩国时间 09:00–15:30'];if(t>=930&&t<940)return['waitAfter','等待盘后','日盘结束，等待15:40盘后'];if(t>=940&&t<1200)return['after','NXT盘后','韩国时间 15:40–20:00'];return['closed','已收盘','下一交易时段为盘前08:00']}
-function calc(){const S=ses();$('session').textContent=S[1];$('sessionNote').textContent=S[2];const prev=n('krPrev'),pre=n('krPre'),day=n('krNow'),aft=n('krAfter');let cur=day,sch=prev?day/prev-1:0;if(S[0]==='pre'){cur=pre;sch=prev?pre/prev-1:0}else if(['after','closed','waitAfter'].includes(S[0])){cur=aft;sch=day?aft/day-1:0}const total=prev?cur/prev-1:0;$('krPrice').textContent=fmt(cur,0);$('krSession').textContent=pct(sch);tone($('krSession'),sch);$('krTotal').textContent=pct(total);tone($('krTotal'),total);
-const vr=n('avgVol')?n('vol')/n('avgVol'):0;$('vrV').textContent=vr.toFixed(2)+'x';$('volV').textContent=fmt(n('vol'),0);$('avgVolV').textContent=fmt(n('avgVol'),0);$('turnV').textContent=fmt(n('turn'),0)+'亿';$('volSignal').textContent=total>0&&vr>=1.5?'放量上涨，趋势确认度较高':total>0&&vr<.8?'缩量上涨，追涨需谨慎':total<0&&vr>=1.5?'放量下跌，短线风险偏高':total<0&&vr<.8?'缩量回调，抛压暂未明显放大':'量能正常';
-[['foreign','fV','fTag'],['inst','iV','iTag'],['retail','rV','rTag']].forEach(([a,b,c])=>{const v=n(a);$(b).textContent=(v>0?'+':'')+fmt(v,0)+'亿';$(b).className=v>0?'up':v<0?'down':'neutral';$(c).textContent=v>0?'净买入':v<0?'净卖出':'中性'});const f=n('foreign'),i=n('inst'),r=n('retail');$('flowSum').textContent=f>0&&i>0?'外资与机构同步净买入，资金结构偏强':f<0&&i<0?'外资与机构同步净卖出，资金结构偏弱':f<0&&r>0?'外资流出、散户承接，短线需谨慎':f>0&&r<0?'外资流入、散户流出，机构资金占优':'资金结构中性';
-let sc=0,why=[];if(cur>n('ma5')){sc+=6;why.push('站上MA5')}if(cur>n('ma20')){sc+=8;why.push('站上MA20')}if(cur>n('ma60')){sc+=6;why.push('站上MA60')}if(n('ma5')>n('ma20'))sc+=5;if(n('ma20')>n('ma60'))sc+=5;const rs=n('rsi');if(rs>=45&&rs<=65){sc+=15;why.push('RSI健康')}else if(rs>65&&rs<=75){sc+=10;why.push('RSI偏热')}else if(rs<30){sc+=6;why.push('RSI超卖')}if($('macd').value==='gold'){sc+=15;why.push('MACD金叉')}else if($('macd').value==='neutral')sc+=7;if(total>0&&vr>=1.2){sc+=16;why.push('量价配合')}else if(total>0)sc+=9;else if(total<0&&vr>=1.5)sc+=1;else sc+=5;if(f>0)sc+=8;if(i>0)sc+=6;if(f>0&&i>0)sc+=3;const env=(n('kospi')+n('k200')+n('sox'))/3;sc+=env>1?10:env>0?6:2;sc=Math.max(0,Math.min(100,sc));const label=sc>=80?'强势':sc>=65?'偏多':sc>=45?'中性':sc>=30?'偏空':'风险较高';$('score').textContent=sc;$('scoreLabel').textContent=label;$('scoreBar').style.width=sc+'%';$('scoreReason').textContent=why.join(' · ');$('strategy').textContent=label+'：'+(cur>=n('r1')*.98?'接近第一阻力，不建议追高；':cur<=n('s1')*1.02?'接近第一支撑，关注企稳信号；':'位于支撑与阻力之间，等待量价确认；')+'跌破第二支撑则趋势失效。';
-[['r2V','r2'],['r1V','r1'],['s1V','s1'],['s2V','s2']].forEach(([a,b])=>$(a).textContent=fmt(n(b),0));$('curV').textContent=fmt(cur,0);$('dS').textContent=pct(n('s1')?cur/n('s1')-1:0);$('dR').textContent=pct(cur?n('r1')/cur-1:0);const risk=cur-n('s1'),reward=n('r1')-cur;$('rr').textContent=risk>0?(reward/risk).toFixed(2):'—';
-const hk=n('hkNow'),hkp=n('hkPrev'),navp=n('hkNavPrev'),adr=n('adrNow'),adrp=n('adrPrev'),adra=n('adrAfter'),fx=n('usdkrw'),ratio=n('ratio')||10,dayCh=prev?day/prev-1:0,hkNav=navp*(1+dayCh*2),hkPrem=hkNav?hk/hkNav-1:0,hkCh=hkp?hk/hkp-1:0,adrTheory=fx?day/ratio/fx:0,adrPrem=adrTheory?adr/adrTheory-1:0,adrCh=adrp?adr/adrp-1:0,adrAfter=adr?adra/adr-1:0;$('hkPrice').textContent=fmt(hk,2);$('hkCh').textContent=pct(hkCh);tone($('hkCh'),hkCh);$('hkNav').textContent=fmt(hkNav,2);$('hkPrem').textContent=pct(hkPrem);tone($('hkPrem'),hkPrem);$('adrPrice').textContent=fmt(adr,2);$('adrCh').textContent=pct(adrCh);tone($('adrCh'),adrCh);$('adrAfterCh').textContent=pct(adrAfter);tone($('adrAfterCh'),adrAfter);$('adrPrem').textContent=pct(adrPrem);tone($('adrPrem'),adrPrem);
-[['kospiV','kospi'],['k200V','k200'],['soxV','sox']].forEach(([a,b])=>{$(a).textContent=(n(b)>0?'+':'')+n(b).toFixed(2)+'%';tone($(a),n(b))});$('fxV').textContent=fmt(fx,1);const cheapest=[{n:'韩国正股',p:0},{n:'香港07709',p:hkPrem},{n:'美国SKHY',p:adrPrem}].sort((a,b)=>a.p-b.p)[0];$('best').textContent='当前相对最便宜：'+cheapest.n+'（按折溢价比较）';const al=[];if(Math.abs(adrPrem)>=.02)al.push('SKHY折溢价超过2%');if(Math.abs(hkPrem)>=.03)al.push('07709折溢价超过3%');$('alert').textContent=al.length?al.join('；')+'。请留意交易时差与估值误差。':'当前折溢价未触发预设提醒。';$('afterEst').textContent='按韩国盘后价估算：07709理论价 HK$'+fmt(navp*(1+((prev?aft/prev-1:0)*2)),2)+'；SKHY理论价 $'+fmt(fx?aft/ratio/fx:0,2)+'。';targets();const sv={};ids.forEach(x=>sv[x]=$(x).value);localStorage.setItem('skhyLatest',JSON.stringify(sv))}
-function targets(){const src=$('source').value,t=n('target'),prev=n('krPrev'),navp=n('hkNavPrev'),fx=n('usdkrw'),ratio=n('ratio')||10;let kr=0,hk=0,adr=0;if(src==='kr'){kr=t;adr=fx?kr/ratio/fx:0;hk=navp*(1+((prev?kr/prev-1:0)*2))}else if(src==='adr'){adr=t;kr=adr*ratio*fx;hk=navp*(1+((prev?kr/prev-1:0)*2))}else{hk=t;const mv=navp?((hk/navp)-1)/2:0;kr=prev*(1+mv);adr=fx?kr/ratio/fx:0}$('tKr').textContent=fmt(kr,0)+' KRW';$('tHk').textContent='HK$'+fmt(hk,2);$('tAdr').textContent='$'+fmt(adr,2)}
-ids.forEach(i=>$(i).addEventListener(['source','macd'].includes(i)?'change':'input',calc));$('theme').onclick=()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;$('theme').textContent=next==='dark'?'☀️':'🌙';localStorage.setItem('theme',next)};$('reset').onclick=()=>{Object.entries(defaults).forEach(([k,v])=>$(k).value=v);calc()};$('copy').onclick=async()=>{const t=['SK海力士交易看板','韩国：'+$('krPrice').textContent+' KRW，'+$('krTotal').textContent,'技术评分：'+$('score').textContent+' '+$('scoreLabel').textContent,'香港07709：'+$('hkPrice').textContent+'，折溢价 '+$('hkPrem').textContent,'美国SKHY：'+$('adrPrice').textContent+'，折溢价 '+$('adrPrem').textContent,$('best').textContent].join('\n');await navigator.clipboard.writeText(t);$('copy').textContent='已复制';setTimeout(()=>$('copy').textContent='复制摘要',1000)};(function(){const s=JSON.parse(localStorage.getItem('skhyLatest')||'{}');ids.forEach(i=>{if(s[i]!==undefined)$(i).value=s[i]});const th=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=th;$('theme').textContent=th==='dark'?'☀️':'🌙';calc();setInterval(calc,60000);if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))})();
-</script></body></html>
+const $=id=>document.getElementById(id);
+let state=JSON.parse(localStorage.getItem("skhyQuotes")||"null")||{};
+const fmt=(x,d=2)=>Number(x||0).toLocaleString("zh-CN",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=x=>(Number(x||0)).toFixed(2)+"%";
+function paint(el,x){el.className="v "+(x>0?"up":x<0?"down":"neutral")}
+function render(){
+ const k=state.korea||{},h=state.hk||{},u=state.us||{},m=state.market||{};
+ $("krPrice").textContent=k.price?fmt(k.price,0):"—";$("krChange").textContent=k.changePercent!=null?pct(k.changePercent):"—";paint($("krChange"),k.changePercent);
+ $("krVolume").textContent=k.volume?fmt(k.volume,0):"—";$("krSource").textContent=k.source||"—";$("krSession").textContent=k.session||"韩国市场";
+ $("hkPrice").textContent=h.price?fmt(h.price,2):"—";$("hkChange").textContent=h.changePercent!=null?pct(h.changePercent):"—";paint($("hkChange"),h.changePercent);
+ $("usPrice").textContent=u.price?fmt(u.price,2):"—";$("usChange").textContent=u.changePercent!=null?pct(u.changePercent):"—";paint($("usChange"),u.changePercent);
+ [["kospi",m.kospi],["kospi200",m.kospi200],["sox",m.sox]].forEach(([id,v])=>{ $(id).textContent=v?.changePercent!=null?pct(v.changePercent):"—";paint($(id),v?.changePercent)});
+ $("fx").textContent=m.usdkrw?.price?fmt(m.usdkrw.price,2):"—";
+ calculate();
+}
+function calculate(){
+ const k=state.korea||{},h=state.hk||{},u=state.us||{},m=state.market||{};
+ const kr=Number(k.price||0),krPrev=Number(k.previousClose||0),hk=Number(h.price||0),fx=Number(m.usdkrw?.price||0),us=Number(u.price||0),navPrev=Number($("navPrev").value||0);
+ const krMove=krPrev?kr/krPrev-1:0,nav=navPrev*(1+2*krMove),hkPrem=nav?hk/nav-1:0,theoryUs=fx?kr/10/fx:0,usPrem=theoryUs?us/theoryUs-1:0;
+ $("hkNav").textContent=nav?fmt(nav,2):"—";$("hkPremium").textContent=nav?pct(hkPrem*100):"—";paint($("hkPremium"),hkPrem);
+ $("usTheory").textContent=theoryUs?fmt(theoryUs,2):"—";$("usPremium").textContent=theoryUs?pct(usPrem*100):"—";paint($("usPremium"),usPrem);
+ const choices=[{n:"韩国正股",p:0},{n:"香港07709",p:hkPrem},{n:"美国SKHY",p:usPrem}].filter(x=>Number.isFinite(x.p)).sort((a,b)=>a.p-b.p);
+ $("best").textContent=choices.length?"当前相对最便宜："+choices[0].n+"（按理论折溢价比较）":"数据不足";
+ const src=$("source").value,t=Number($("target").value||0);let tkr=0,thk=0,tus=0;
+ if(src==="kr"){tkr=t;tus=fx?tkr/10/fx:0;thk=navPrev*(1+2*(krPrev?tkr/krPrev-1:0))}
+ else if(src==="us"){tus=t;tkr=tus*10*fx;thk=navPrev*(1+2*(krPrev?tkr/krPrev-1:0))}
+ else{thk=t;const mv=navPrev?((thk/navPrev)-1)/2:0;tkr=krPrev*(1+mv);tus=fx?tkr/10/fx:0}
+ $("targetKr").textContent=tkr?fmt(tkr,0)+" KRW":"—";$("targetHk").textContent=thk?"HK$"+fmt(thk,2):"—";$("targetUs").textContent=tus?"$"+fmt(tus,2):"—";
+}
+async function refresh(){
+ const base=window.SK_CONFIG?.API_BASE;
+ if(!base||base.includes("YOUR-WORKER")){setStatus(false,"请先在 config.js 填写 Worker 地址");return}
+ $("refresh").disabled=true;$("refresh").textContent="正在刷新…";setStatus(null,"正在获取行情");
+ try{
+  const r=await fetch(base+"/api/quotes",{cache:"no-store"});
+  const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||("HTTP "+r.status));
+  state=j;localStorage.setItem("skhyQuotes",JSON.stringify(j));render();
+  const time=new Date(j.updatedAt).toLocaleString("zh-CN",{hour12:false});
+  $("updated").textContent=time;setStatus(true,"刷新成功");
+ }catch(e){console.error(e);setStatus(false,"刷新失败，继续使用上次数据")}
+ finally{$("refresh").disabled=false;$("refresh").textContent="刷新行情"}
+}
+function setStatus(ok,text){$("statusText").textContent=text;$("dot").className="dot"+(ok===true?" ok":ok===false?" err":"")}
+$("refresh").onclick=refresh;["source","target","navPrev"].forEach(id=>$(id).addEventListener(id==="source"?"change":"input",calculate));
+$("applyManual").onclick=()=>{state={...state,korea:{...(state.korea||{}),price:+$("manualKr").value,previousClose:+$("manualKrPrev").value,source:"手动"},hk:{...(state.hk||{}),price:+$("manualHk").value,previousClose:+$("manualHkPrev").value},us:{...(state.us||{}),price:+$("manualUs").value,previousClose:+$("manualUsPrev").value},market:{...(state.market||{}),usdkrw:{price:+$("manualFx").value}}};localStorage.setItem("skhyQuotes",JSON.stringify(state));render();setStatus(true,"已应用手动数据")};
+$("theme").onclick=()=>{const d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";$("theme").textContent=d?"🌙":"☀️";localStorage.setItem("theme",d?"light":"dark")};
+document.documentElement.dataset.theme=localStorage.getItem("theme")||"light";$("theme").textContent=document.documentElement.dataset.theme==="dark"?"☀️":"🌙";render();
+</script>
+</body>
+</html>

@@ -1,21 +1,18 @@
-# SK海力士交易看板（最新版静态版）
+# SK海力士看板（已配置版）
 
-## 覆盖 GitHub
-1. 解压 ZIP。
-2. 打开原 GitHub 仓库。
-3. 选择“添加文件 / Upload files”。
-4. 上传压缩包内全部文件。
-5. 同名文件会显示为修改，提交更改即可。
-6. GitHub Pages 原网址不会改变。
+本版本已写入你的 Cloudflare Worker 地址：
 
-## 已包含
-- KOSPI / KOSPI200 / SOX / USDKRW
-- 韩国盘前、日盘、盘后、休市自动识别
-- 成交量、量比、成交额
-- 外资、机构、散户资金流
-- 技术评分、RSI、MACD、均线
-- 支撑、阻力、风险收益比
-- 07709估算净值与折溢价
-- SKHY理论价与折溢价
-- 跨市场目标价格换算
-- 本地自动保存、深色模式、PWA
+`https://skhynix-api.star1i.workers.dev`
+
+## 覆盖上传到 GitHub
+
+1. 解压本 ZIP。
+2. 打开原仓库 `skhynix-calculator`。
+3. 选择 **Add file / 添加文件 → Upload files / 上传文件**。
+4. 上传解压后的全部文件。
+5. 点击 **Commit changes / 提交更改**。
+6. 等待约 1–2 分钟后刷新原 GitHub Pages 地址。
+
+原网页地址不会改变。
+
+若手机仍显示旧版，请在 Safari 刷新一次；仍未更新时，关闭桌面图标后重新打开。
