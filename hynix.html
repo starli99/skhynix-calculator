@@ -179,8 +179,30 @@ async function refresh(){
 function setStatus(ok,text){$("statusText").textContent=text;$("dot").className="dot"+(ok===true?" ok":ok===false?" err":"")}
 $("refresh").onclick=refresh;["source","target","navPrev"].forEach(id=>$(id).addEventListener(id==="source"?"change":"input",calculate));
 $("applyManual").onclick=()=>{state={...state,korea:{...(state.korea||{}),price:+$("manualKr").value,previousClose:+$("manualKrPrev").value,source:"手动"},hk:{...(state.hk||{}),price:+$("manualHk").value,previousClose:+$("manualHkPrev").value},us:{...(state.us||{}),price:+$("manualUs").value,previousClose:+$("manualUsPrev").value},market:{...(state.market||{}),usdkrw:{price:+$("manualFx").value}}};localStorage.setItem("skhyQuotes",JSON.stringify(state));render();setStatus(true,"已应用手动数据")};
-$("theme").onclick=()=>{const d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";$("theme").textContent=d?"🌙":"☀️";localStorage.setItem("theme",d?"light":"dark")};
-document.documentElement.dataset.theme=localStorage.getItem("theme")||"light";$("theme").textContent=document.documentElement.dataset.theme==="dark"?"☀️":"🌙";render();
+$("theme").onclick=()=>{const d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme =
+  localStorage.getItem("theme") || "light";
+
+$("theme").textContent =
+  document.documentElement.dataset.theme === "dark" ? "☀️" : "🌙";
+
+render();
+
+// 打开计算器时自动刷新一次
+refresh();
+
+// 每 15 秒刷新一次，仅在页面位于前台时执行
+setInterval(() => {
+  if (!document.hidden) {
+    refresh();
+  }
+}, 15000);
+
+// 回到页面时立即刷新
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    refresh();
+  }
+});
 </script>
 </body>
 </html>
