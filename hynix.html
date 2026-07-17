@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>SK海力士跨市场看板</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--soft:#f8fafc;--blue:#2563eb;--blueSoft:#eff6ff;--up:#d92d20;--down:#039855;--warn:#dc6803;--shadow:0 8px 24px rgba(16,24,40,.06)}
+[data-theme=dark]{--bg:#08111f;--card:#111827;--text:#f8fafc;--muted:#98a2b3;--line:#273244;--soft:#0f172a;--blue:#60a5fa;--blueSoft:#172554;--up:#fb7185;--down:#34d399;--warn:#fbbf24;--shadow:0 10px 30px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.app{max-width:920px;margin:auto;padding:14px 12px 38px}header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.actions{display:flex;gap:8px}
+button{border:0;border-radius:12px;padding:10px 13px;font-size:14px;font-weight:800;background:var(--blue);color:#fff;cursor:pointer}
+button.secondary{background:var(--card);color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.55}
+.status{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--muted);margin-right:6px}.dot.ok{background:var(--down)}.dot.err{background:var(--up)}
+.market{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}
+.head{display:flex;justify-content:space-between;gap:10px}.name{font-size:16px;font-weight:900}.ticker{font-size:11px;color:var(--muted);margin-top:3px}.badge{background:var(--blueSoft);color:var(--blue);padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;white-space:nowrap}
+.price{font-size:31px;font-weight:950;letter-spacing:-1px;margin-top:10px}.unit{font-size:13px;color:var(--muted);font-weight:800;margin-left:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:var(--soft);border-radius:12px;padding:10px;min-width:0}.k{font-size:11px;color:var(--muted);font-weight:800}.v{font-size:17px;font-weight:950;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up{color:var(--up)}.down{color:var(--down)}.neutral{color:var(--text)}.section{font-size:14px;color:var(--muted);font-weight:900;margin:18px 2px 8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
+.env{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.mini{background:var(--soft);border-radius:12px;padding:10px}
+.alert{padding:11px 12px;border-radius:12px;background:var(--blueSoft);font-size:12px;line-height:1.55;font-weight:700;margin-top:9px}
+.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;font-size:11px;color:var(--muted);font-weight:900;margin-bottom:5px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--soft);color:var(--text);font-size:15px}
+details summary{font-weight:900;cursor:pointer}.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}.footer{text-align:center;color:var(--muted);font-size:11px;line-height:1.6;margin-top:18px}
+@media(max-width:680px){.env{grid-template-columns:repeat(2,1fr)}.inputs{grid-template-columns:1fr 1fr}.calc{grid-template-columns:1fr}}
+@media(max-width:390px){.app{padding:12px 9px 30px}.price{font-size:28px}.v{font-size:15px}.stat{padding:9px 7px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div><h1>SK海力士跨市场看板</h1><div class="sub">需要时点击刷新，不持续请求行情</div></div>
+ <div class="actions"><button id="refresh">刷新行情</button><button id="theme" class="secondary">🌙</button></div>
+</header>
+
+<div class="status"><span><i id="dot" class="dot"></i><span id="statusText">尚未刷新</span></span><span id="updated">—</span></div>
+
+<section class="panel">
+ <div class="env">
+  <div class="mini"><div class="k">KOSPI</div><div class="v" id="kospi">—</div></div>
+  <div class="mini"><div class="k">KOSPI 200</div><div class="v" id="kospi200">—</div></div>
+  <div class="mini"><div class="k">SOX</div><div class="v" id="sox">—</div></div>
+  <div class="mini"><div class="k">USD/KRW</div><div class="v" id="fx">—</div></div>
+ </div>
+</section>
+
+<div class="section">三地行情</div>
+<article class="market">
+ <div class="head"><div><div class="name">韩国正股</div><div class="ticker">000660 · KRW</div></div><span class="badge" id="krSession">韩国市场</span></div>
+ <div class="price"><span id="krPrice">—</span><span class="unit">KRW</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="krChange">—</div></div>
+  <div class="stat"><div class="k">成交量</div><div class="v" id="krVolume">—</div></div>
+  <div class="stat"><div class="k">数据来源</div><div class="v" id="krSource">—</div></div>
+ </div>
+</article>
+
+<article class="market">
+ <div class="head"><div><div class="name">香港南方东英2倍</div><div class="ticker">07709 · HKD</div></div><span class="badge">每日2倍</span></div>
+ <div class="price"><span id="hkPrice">—</span><span class="unit">HKD</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="hkChange">—</div></div>
+  <div class="stat"><div class="k">估算净值</div><div class="v" id="hkNav">—</div></div>
+  <div class="stat"><div class="k">折溢价</div><div class="v" id="hkPremium">—</div></div>
+ </div>
+</article>
+
+<article class="market">
+ <div class="head"><div><div class="name">美国ADR</div><div class="ticker">SKHY · USD</div></div><span class="badge">10 ADR = 1股</span></div>
+ <div class="price"><span id="usPrice">—</span><span class="unit">USD</span></div>
+ <div class="stats">
+  <div class="stat"><div class="k">涨跌幅</div><div class="v" id="usChange">—</div></div>
+  <div class="stat"><div class="k">理论价</div><div class="v" id="usTheory">—</div></div>
+  <div class="stat"><div class="k">折溢价</div><div class="v" id="usPremium">—</div></div>
+ </div>
+</article>
+
+<div class="section">跨市场结论</div>
+<section class="panel">
+ <div class="alert" id="best">刷新后显示相对折溢价。</div>
+ <div class="alert" id="warning">免费公开行情可能延迟或临时失效，页面会保留上一次成功数据。</div>
+</section>
+
+<div class="section">目标价格换算</div>
+<section class="panel">
+ <div class="inputs">
+  <div><label>输入市场</label><select id="source"><option value="kr">韩国正股</option><option value="us">美国ADR</option><option value="hk">香港07709</option></select></div>
+  <div><label>目标价格</label><input id="target" inputmode="decimal" value="2200000"></div>
+  <div><label>07709昨日净值</label><input id="navPrev" inputmode="decimal" value="84"></div>
+ </div>
+ <div class="calc">
+  <div class="mini"><div class="k">韩国理论价</div><div class="v" id="targetKr">—</div></div>
+  <div class="mini"><div class="k">香港理论价</div><div class="v" id="targetHk">—</div></div>
+  <div class="mini"><div class="k">ADR理论价</div><div class="v" id="targetUs">—</div></div>
+ </div>
+</section>
+
+<div class="section">手动兜底</div>
+<section class="panel">
+<details>
+ <summary>自动获取失败时展开修改</summary>
+ <div class="inputs" style="margin-top:13px">
+  <div><label>韩国现价</label><input id="manualKr" inputmode="decimal"></div>
+  <div><label>韩国昨收</label><input id="manualKrPrev" inputmode="decimal"></div>
+  <div><label>07709现价</label><input id="manualHk" inputmode="decimal"></div>
+  <div><label>07709昨收</label><input id="manualHkPrev" inputmode="decimal"></div>
+  <div><label>SKHY现价</label><input id="manualUs" inputmode="decimal"></div>
+  <div><label>SKHY昨收</label><input id="manualUsPrev" inputmode="decimal"></div>
+  <div><label>USD/KRW</label><input id="manualFx" inputmode="decimal"></div>
+ </div>
+ <button id="applyManual" style="margin-top:12px">应用手动数据</button>
+</details>
+</section>
+
+<div class="footer">数据仅供估算。韩国行情优先使用公开韩国行情源，港美股、指数与汇率使用公开市场数据源；均不构成交易建议。</div>
+</div>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let state=JSON.parse(localStorage.getItem("skhyQuotes")||"null")||{};
+const fmt=(x,d=2)=>Number(x||0).toLocaleString("zh-CN",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=x=>(Number(x||0)).toFixed(2)+"%";
+function paint(el,x){el.className="v "+(x>0?"up":x<0?"down":"neutral")}
+function render(){
+ const k=state.korea||{},h=state.hk||{},u=state.us||{},m=state.market||{};
+ $("krPrice").textContent=k.price?fmt(k.price,0):"—";$("krChange").textContent=k.changePercent!=null?pct(k.changePercent):"—";paint($("krChange"),k.changePercent);
+ $("krVolume").textContent=k.volume?fmt(k.volume,0):"—";$("krSource").textContent=k.source||"—";$("krSession").textContent=k.session||"韩国市场";
+ $("hkPrice").textContent=h.price?fmt(h.price,2):"—";$("hkChange").textContent=h.changePercent!=null?pct(h.changePercent):"—";paint($("hkChange"),h.changePercent);
+ $("usPrice").textContent=u.price?fmt(u.price,2):"—";$("usChange").textContent=u.changePercent!=null?pct(u.changePercent):"—";paint($("usChange"),u.changePercent);
+ [["kospi",m.kospi],["kospi200",m.kospi200],["sox",m.sox]].forEach(([id,v])=>{ $(id).textContent=v?.changePercent!=null?pct(v.changePercent):"—";paint($(id),v?.changePercent)});
+ $("fx").textContent=m.usdkrw?.price?fmt(m.usdkrw.price,2):"—";
+ calculate();
+}
+function calculate(){
+ const k=state.korea||{},h=state.hk||{},u=state.us||{},m=state.market||{};
+ const kr=Number(k.price||0),krPrev=Number(k.previousClose||0),hk=Number(h.price||0),fx=Number(m.usdkrw?.price||0),us=Number(u.price||0),navPrev=Number($("navPrev").value||0);
+ const krMove=krPrev?kr/krPrev-1:0,nav=navPrev*(1+2*krMove),hkPrem=nav?hk/nav-1:0,theoryUs=fx?kr/10/fx:0,usPrem=theoryUs?us/theoryUs-1:0;
+ $("hkNav").textContent=nav?fmt(nav,2):"—";$("hkPremium").textContent=nav?pct(hkPrem*100):"—";paint($("hkPremium"),hkPrem);
+ $("usTheory").textContent=theoryUs?fmt(theoryUs,2):"—";$("usPremium").textContent=theoryUs?pct(usPrem*100):"—";paint($("usPremium"),usPrem);
+ const choices=[{n:"韩国正股",p:0},{n:"香港07709",p:hkPrem},{n:"美国SKHY",p:usPrem}].filter(x=>Number.isFinite(x.p)).sort((a,b)=>a.p-b.p);
+ $("best").textContent=choices.length?"当前相对最便宜："+choices[0].n+"（按理论折溢价比较）":"数据不足";
+ const src=$("source").value,t=Number($("target").value||0);let tkr=0,thk=0,tus=0;
+ if(src==="kr"){tkr=t;tus=fx?tkr/10/fx:0;thk=navPrev*(1+2*(krPrev?tkr/krPrev-1:0))}
+ else if(src==="us"){tus=t;tkr=tus*10*fx;thk=navPrev*(1+2*(krPrev?tkr/krPrev-1:0))}
+ else{thk=t;const mv=navPrev?((thk/navPrev)-1)/2:0;tkr=krPrev*(1+mv);tus=fx?tkr/10/fx:0}
+ $("targetKr").textContent=tkr?fmt(tkr,0)+" KRW":"—";$("targetHk").textContent=thk?"HK$"+fmt(thk,2):"—";$("targetUs").textContent=tus?"$"+fmt(tus,2):"—";
+}
+async function refresh(){
+ const base=window.SK_CONFIG?.API_BASE;
+ if(!base||base.includes("YOUR-WORKER")){setStatus(false,"请先在 config.js 填写 Worker 地址");return}
+ $("refresh").disabled=true;$("refresh").textContent="正在刷新…";setStatus(null,"正在获取行情");
+ try{
+  const r=await fetch(base+"/api/quotes",{cache:"no-store"});
+  const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||("HTTP "+r.status));
+  state=j;localStorage.setItem("skhyQuotes",JSON.stringify(j));render();
+  const time=new Date(j.updatedAt).toLocaleString("zh-CN",{hour12:false});
+  $("updated").textContent=time;setStatus(true,"刷新成功");
+ }catch(e){console.error(e);setStatus(false,"刷新失败，继续使用上次数据")}
+ finally{$("refresh").disabled=false;$("refresh").textContent="刷新行情"}
+}
+function setStatus(ok,text){$("statusText").textContent=text;$("dot").className="dot"+(ok===true?" ok":ok===false?" err":"")}
+$("refresh").onclick=refresh;["source","target","navPrev"].forEach(id=>$(id).addEventListener(id==="source"?"change":"input",calculate));
+$("applyManual").onclick=()=>{state={...state,korea:{...(state.korea||{}),price:+$("manualKr").value,previousClose:+$("manualKrPrev").value,source:"手动"},hk:{...(state.hk||{}),price:+$("manualHk").value,previousClose:+$("manualHkPrev").value},us:{...(state.us||{}),price:+$("manualUs").value,previousClose:+$("manualUsPrev").value},market:{...(state.market||{}),usdkrw:{price:+$("manualFx").value}}};localStorage.setItem("skhyQuotes",JSON.stringify(state));render();setStatus(true,"已应用手动数据")};
+$("theme").onclick=()=>{const d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";$("theme").textContent=d?"🌙":"☀️";localStorage.setItem("theme",d?"light":"dark")};
+document.documentElement.dataset.theme=localStorage.getItem("theme")||"light";$("theme").textContent=document.documentElement.dataset.theme==="dark"?"☀️":"🌙";render();
+</script>
+</body>
+</html>
