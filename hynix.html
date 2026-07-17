@@ -34,8 +34,19 @@ details summary{font-weight:900;cursor:pointer}.calc{display:grid;grid-template-
 <body>
 <div class="app">
 <header>
- <div><h1>SK海力士跨市场看板</h1><div class="sub">需要时点击刷新，不持续请求行情</div></div>
- <div class="actions"><button id="refresh">刷新行情</button><button id="theme" class="secondary">🌙</button></div>
+  <div>
+    <a href="index.html" style="display:inline-block;margin-bottom:8px;color:var(--blue);text-decoration:none;font-size:13px;font-weight:800;">
+      ← 返回股票分析首页
+    </a>
+
+    <h1>SK海力士跨市场看板</h1>
+    <div class="sub">需要时点击刷新，不持续请求行情</div>
+  </div>
+
+  <div class="actions">
+    <button id="refresh">刷新行情</button>
+    <button id="theme" class="secondary">🌙</button>
+  </div>
 </header>
 
 <div class="status"><span><i id="dot" class="dot"></i><span id="statusText">尚未刷新</span></span><span id="updated">—</span></div>
