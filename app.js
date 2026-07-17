@@ -41,7 +41,19 @@ function render(){
   $("list").appendChild(card);
  });
 }
-async function refresh(){
+let isRefreshing = false;
+
+async function refresh() {
+  if (isRefreshing) return;
+
+  isRefreshing = true;
+
+  try {
+    // 原来的刷新代码
+  } finally {
+    isRefreshing = false;
+  }
+}
  const base=window.STOCK_CONFIG?.API_BASE; $("refresh").disabled=true;$("message").textContent="正在获取行情…";
  try{
   const symbols=list.map(x=>x.symbol).join(",");
@@ -61,3 +73,19 @@ $("add").onclick=()=>{try{const s=normalize($("symbolInput").value);if(list.some
 $("refresh").onclick=refresh;
 $("theme").onclick=()=>{const next=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=next;localStorage.setItem("theme",next);$("theme").textContent=next==="dark"?"☀️":"🌙"};
 document.documentElement.dataset.theme=localStorage.getItem("theme")||"light";$("theme").textContent=document.documentElement.dataset.theme==="dark"?"☀️":"🌙";render();refresh();
+// 打开页面后自动刷新一次
+refresh();
+
+// 页面停留在前台时，每 15 秒自动刷新
+let autoRefreshTimer = setInterval(() => {
+  if (!document.hidden) {
+    refresh();
+  }
+}, 15000);
+
+// 从后台切回页面时立即刷新
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    refresh();
+  }
+});
