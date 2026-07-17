@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>股票详情</title><link rel="stylesheet" href="styles.css">
+<script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script></head>
+<body><main class="app">
+<header><div><a class="btn secondary" href="index.html">← 返回</a></div><button id="theme" class="secondary">🌙</button></header>
+<section class="panel"><div class="row" style="justify-content:space-between"><div><h1 id="name">股票详情</h1><div id="ticker" class="ticker"></div></div><span id="status" class="badge">获取中</span></div>
+<div class="price" id="price">—</div><div id="change" class="change">—</div>
+<div class="grid" style="margin-top:14px"><div class="stat"><div class="k">52周最高</div><div class="v" id="high52">—</div></div><div class="stat"><div class="k">52周最低</div><div class="v" id="low52">—</div></div><div class="stat"><div class="k">距高点回撤</div><div class="v" id="drawdown">—</div></div></div></section>
+<section class="panel"><div id="chart" class="chart"></div></section>
+<section class="panel"><div class="grid"><div class="stat"><div class="k">MA5</div><div class="v" id="ma5">—</div></div><div class="stat"><div class="k">MA20</div><div class="v" id="ma20">—</div></div><div class="stat"><div class="k">MA60</div><div class="v" id="ma60">—</div></div><div class="stat"><div class="k">第一支撑</div><div class="v" id="support">—</div></div><div class="stat"><div class="k">第一压力</div><div class="v" id="resistance">—</div></div><div class="stat"><div class="k">数据时间</div><div class="v" id="time" style="font-size:13px">—</div></div></div></section>
+<p id="note" class="notice">所有指标仅根据接口返回的真实K线计算。</p>
+</main><script src="config.js"></script><script src="stock.js"></script></body></html>

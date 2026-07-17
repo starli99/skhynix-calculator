@@ -1,0 +1,14 @@
+:root{--bg:#f4f6f8;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--soft:#f8fafc;--blue:#2563eb;--up:#d92d20;--down:#039855;--shadow:0 8px 24px rgba(16,24,40,.06)}
+[data-theme=dark]{--bg:#08111f;--card:#111827;--text:#f8fafc;--muted:#98a2b3;--line:#273244;--soft:#0f172a;--blue:#60a5fa;--up:#fb7185;--down:#34d399;--shadow:0 10px 30px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.app{max-width:920px;margin:auto;padding:16px 12px 40px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+h1{font-size:22px;margin:0}.sub,.muted{color:var(--muted);font-size:12px}.actions,.search{display:flex;gap:8px}
+button,.btn{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:800;background:var(--blue);color:#fff;text-decoration:none;cursor:pointer}
+.secondary{background:var(--card);color:var(--text);border:1px solid var(--line)}input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-size:16px}
+.panel,.stock-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}.panel{margin-bottom:12px}.list{display:grid;gap:10px}
+.stock-card{display:flex;justify-content:space-between;align-items:center;gap:12px}.stock-main{flex:1;min-width:0;cursor:pointer}.stock-name{font-size:16px;font-weight:900}.ticker{font-size:12px;color:var(--muted);margin-top:3px}
+.quote{text-align:right}.price{font-size:24px;font-weight:950}.change{font-size:13px;font-weight:800;margin-top:3px}.up{color:var(--up)}.down{color:var(--down)}.row{display:flex;gap:8px;align-items:center}
+.delete{background:transparent;color:var(--muted);padding:8px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:var(--soft);border-radius:12px;padding:11px}
+.k{font-size:11px;color:var(--muted);font-weight:800}.v{font-size:18px;font-weight:950;margin-top:5px}.chart{height:430px}.notice{font-size:12px;line-height:1.6;color:var(--muted)}
+.badge{display:inline-block;background:var(--soft);padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.section-title{font-size:14px;color:var(--muted);font-weight:900;margin:18px 2px 8px}
+@media(max-width:620px){.grid{grid-template-columns:1fr 1fr}.search{flex-direction:column}.price{font-size:21px}.chart{height:360px}}
